@@ -1,0 +1,32 @@
+﻿<Window x:Class="FileOutput.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FileOutput"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <StackPanel Margin="20">
+            <!-- 文件选择区域 -->
+            <GroupBox Header="选择文件">
+                <StackPanel>
+                    <Button Content="选择单个文件" Click="BtnSelectSingle_Click"/>
+                    <Button Content="选择多个文件" Click="BtnSelectMultiple_Click"/>
+                    <ListBox x:Name="lstFiles" Height="100" Margin="5"/>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- 操作按钮区域 -->
+            <StackPanel Orientation="Horizontal" Margin="5">
+                <Button Content="转存为Base64并保存到XML" Click="BtnSaveToXml_Click" Width="200"/>
+                <Button Content="从XML还原文件" Click="BtnRestoreFromXml_Click" Width="200" Margin="10,0,0,0"/>
+                <TextBlock Text="转存文件开始序号" Margin="10,2,0,0"/>
+                <TextBox x:Name="nummber" Width="50" Margin="10,2,0,0" Text="1" HorizontalContentAlignment="Center"/>
+            </StackPanel>
+
+            <!-- 状态提示区域 -->
+            <TextBox x:Name="txtStatus" Height="50" IsReadOnly="True" Background="LightGray" Margin="5"/>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -1,0 +1,15 @@
+D:\old\FileOutput\FileOutput\bin\Debug\FileOutput.exe.config
+D:\old\FileOutput\FileOutput\bin\Debug\FileOutput.exe
+D:\old\FileOutput\FileOutput\bin\Debug\FileOutput.pdb
+D:\old\FileOutput\FileOutput\obj\Debug\FileOutput.csproj.AssemblyReference.cache
+D:\old\FileOutput\FileOutput\obj\Debug\MainWindow.g.cs
+D:\old\FileOutput\FileOutput\obj\Debug\App.g.cs
+D:\old\FileOutput\FileOutput\obj\Debug\FileOutput_MarkupCompile.cache
+D:\old\FileOutput\FileOutput\obj\Debug\FileOutput_MarkupCompile.lref
+D:\old\FileOutput\FileOutput\obj\Debug\MainWindow.baml
+D:\old\FileOutput\FileOutput\obj\Debug\FileOutput.g.resources
+D:\old\FileOutput\FileOutput\obj\Debug\FileOutput.Properties.Resources.resources
+D:\old\FileOutput\FileOutput\obj\Debug\FileOutput.csproj.GenerateResource.cache
+D:\old\FileOutput\FileOutput\obj\Debug\FileOutput.csproj.CoreCompileInputs.cache
+D:\old\FileOutput\FileOutput\obj\Debug\FileOutput.exe
+D:\old\FileOutput\FileOutput\obj\Debug\FileOutput.pdb
