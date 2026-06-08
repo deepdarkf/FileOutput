@@ -74,8 +74,11 @@ namespace FileOutput
             {
                 try
                 {
-                    var xmlData = new List<XElement>();
-
+                    FileInfo fileInfo = new FileInfo(file);
+                    if (fileInfo.Extension.Equals(@".a"))
+                    {
+                        continue;
+                    }
                     // 读取文件字节流并转换为Base64
                     //var bytes = File.ReadAllBytes(file);
                     //var base64String = Convert.ToBase64String(bytes);
@@ -99,7 +102,7 @@ namespace FileOutput
                 }
             }
 
-            txtStatus.Text = $"已成功将{selectedFiles.Count}个文件转存为Base64";
+            txtStatus.Text = $"已成功将文件转存为Base64";
         }
 
         // 还原文件
@@ -119,8 +122,7 @@ namespace FileOutput
                 // 将Base64字符串转换为字节数组
                 if (!fileInfo.Extension.Equals(@".a"))
                 {
-                    txtStatus.Text = "请选择正确的还原文件";
-                    return;
+                    continue;
                 }
                 byte[] nameBytes = Convert.FromBase64String(fileInfo.Name.Remove(fileInfo.Name.Length - 2, 2));
                 // 将字节数组转换为UTF8编码的字符串
@@ -129,7 +131,7 @@ namespace FileOutput
                 string saveFilePath = new FileInfo(file).DirectoryName + "\\" + fileName;
                 File.Move(file, saveFilePath);
             }
-            txtStatus.Text = $"已成功还原{selectedFiles.Count}个文件";
+            txtStatus.Text = $"已成功还原文件";
         }
     }
 }
