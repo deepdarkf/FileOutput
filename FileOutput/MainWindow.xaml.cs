@@ -128,7 +128,7 @@ namespace FileOutput
                 // 将字节数组转换为UTF8编码的字符串
                 string fileName = System.Text.Encoding.UTF8.GetString(nameBytes);
 
-                string saveFilePath = new FileInfo(file).DirectoryName + "\\" + fileName;
+                string saveFilePath = fileInfo.DirectoryName + "\\" + fileName;
                 File.Move(file, saveFilePath);
             }
             txtStatus.Text = $"已成功还原文件";
