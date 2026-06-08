@@ -133,5 +133,67 @@ namespace FileOutput
             }
             txtStatus.Text = $"已成功还原文件";
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            FolderSelectDialog folderSelectDialog = new FolderSelectDialog();
+            if (folderSelectDialog.ShowDialog())
+            {
+                txtStatus.Text = "开始全文件夹转换";
+                string[] folders = Directory.GetDirectories(folderSelectDialog.FileName, "*.*", SearchOption.AllDirectories);
+                folders = folders.Concat(new string[1] { folderSelectDialog.FileName }).ToArray();
+                foreach (string folder in folders)
+                {
+                    string[] files = Directory.GetFiles(folder);
+                    foreach (string file in files)
+                    {
+                        FileInfo fileInfo = new FileInfo(file);
+                        if (fileInfo.Extension.Equals(@".a"))
+                        {
+                            continue;
+                        }
+
+                        // 将字符串转换为UTF8编码的字节数组
+                        byte[] nameBytes = System.Text.Encoding.UTF8.GetBytes(System.IO.Path.GetFileName(file));
+                        // 将字节数组转换为Base64字符串
+                        string nameBase64String = Convert.ToBase64String(nameBytes);
+
+                        string saveFilePath = new FileInfo(file).DirectoryName + "\\" + nameBase64String + ".a";
+                        File.Move(file, saveFilePath);
+                    }
+                }
+                txtStatus.Text = "全文件夹转换完成";
+            }
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            FolderSelectDialog folderSelectDialog = new FolderSelectDialog();
+            if (folderSelectDialog.ShowDialog())
+            {
+                txtStatus.Text = "开始全文件夹还原";
+                string[] folders = Directory.GetDirectories(folderSelectDialog.FileName, "*.*", SearchOption.AllDirectories);
+                folders = folders.Concat(new string[1] { folderSelectDialog.FileName }).ToArray();
+                foreach (string folder in folders)
+                {
+                    string[] files = Directory.GetFiles(folder);
+                    foreach (string file in files)
+                    {
+                        FileInfo fileInfo = new FileInfo(file);
+                        if (!fileInfo.Extension.Equals(@".a"))
+                        {
+                            continue;
+                        }
+                        byte[] nameBytes = Convert.FromBase64String(fileInfo.Name.Remove(fileInfo.Name.Length - 2, 2));
+                        // 将字节数组转换为UTF8编码的字符串
+                        string fileName = System.Text.Encoding.UTF8.GetString(nameBytes);
+
+                        string saveFilePath = fileInfo.DirectoryName + "\\" + fileName;
+                        File.Move(file, saveFilePath);
+                    }
+                }
+                txtStatus.Text = "全文件夹还原完成";
+            }
+        }
     }
 }
