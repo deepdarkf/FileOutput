@@ -61,28 +61,12 @@ namespace FileOutput
             }
         }
 
-        // 转存为Base64并保存到XML
+        // 转存为Base64
         private void BtnSaveToXml_Click(object sender, RoutedEventArgs e)
         {
             if (selectedFiles.Count == 0)
             {
                 txtStatus.Text = "请先选择文件";
-                return;
-            }
-
-            string saveFilePath = null;
-
-            FolderSelectDialog folderSelectDialog = new FolderSelectDialog();
-            folderSelectDialog.Title = "请选择要保存xml的路径";
-
-            if (folderSelectDialog.ShowDialog())
-            {
-                saveFilePath = folderSelectDialog.FileName;
-            }
-
-            if (string.IsNullOrEmpty(saveFilePath))
-            {
-                txtStatus.Text = "请先选择保存路径";
                 return;
             }
 
@@ -93,34 +77,20 @@ namespace FileOutput
                     var xmlData = new List<XElement>();
 
                     // 读取文件字节流并转换为Base64
-                    var bytes = File.ReadAllBytes(file);
-                    var base64String = Convert.ToBase64String(bytes);
+                    //var bytes = File.ReadAllBytes(file);
+                    //var base64String = Convert.ToBase64String(bytes);
 
                     //创建日期和修改日期
-                    DateTime creationTime = File.GetCreationTime(file);
-                    DateTime lastWriteTime = File.GetLastWriteTime(file);
+                    //DateTime creationTime = File.GetCreationTime(file);
+                    //DateTime lastWriteTime = File.GetLastWriteTime(file);
 
                     // 将字符串转换为UTF8编码的字节数组
                     byte[] nameBytes = System.Text.Encoding.UTF8.GetBytes(System.IO.Path.GetFileName(file));
                     // 将字节数组转换为Base64字符串
                     string nameBase64String = Convert.ToBase64String(nameBytes);
 
-                    // 保存到XML文件
-                    XDocument doc = new XDocument(
-                        new XDeclaration("1.0", "UTF-8", null),
-                        // 创建XML节点
-                        new XElement("File",
-                            new XElement("CreationTime", creationTime),
-                            new XElement("LastWriteTime", lastWriteTime),
-                            new XElement("FileName", nameBase64String),
-                            new XElement("Base64Data", base64String))
-                    );
-                    while (File.Exists(saveFilePath + "\\" + nummber.Text + ".xml"))
-                    {
-                        nummber.Text = (int.Parse(nummber.Text) + 1).ToString();
-                    }
-                    doc.Save(saveFilePath + "\\" + nummber.Text + ".xml");
-                    nummber.Text = (int.Parse(nummber.Text) + 1).ToString();
+                    string saveFilePath = new FileInfo(file).DirectoryName + "\\" + nameBase64String + ".a";
+                    File.Move(file, saveFilePath);
                 }
                 catch (Exception ex)
                 {
@@ -129,66 +99,37 @@ namespace FileOutput
                 }
             }
 
-            txtStatus.Text = $"已成功将{selectedFiles.Count}个文件转存为Base64并保存到{saveFilePath}";
+            txtStatus.Text = $"已成功将{selectedFiles.Count}个文件转存为Base64";
         }
 
-        // 从XML还原文件
+        // 还原文件
         private void BtnRestoreFromXml_Click(object sender, RoutedEventArgs e)
         {
-            List<XElement> fileRecords = new List<XElement>();
-
-            FolderSelectDialog folderSelect = new FolderSelectDialog();
-            folderSelect.Title = "请选择要还原的目录";
-            if (folderSelect.ShowDialog())
+            if (selectedFiles.Count == 0)
             {
-                string[] files = Directory.GetFiles(folderSelect.FileName, "*.xml");
-                foreach (string file in files)
-                {
-                    var doc = XDocument.Load(file);
-                    fileRecords.Add(doc.Element("File"));
-                }
-            }
-
-            if (fileRecords.Count == 0)
-            {
-                txtStatus.Text = "XML文件中没有可还原的记录";
+                txtStatus.Text = "请先选择文件";
                 return;
             }
 
-            FolderSelectDialog folderSelectDialog = new FolderSelectDialog();
-            folderSelectDialog.Title = "请选择保存目录";
-            if (folderSelectDialog.ShowDialog())
+            foreach (var file in selectedFiles)
             {
-                foreach (var record in fileRecords)
+                //DateTime creationTime = Convert.ToDateTime(record.Element("CreationTime")?.Value);
+                //DateTime lastWriteTime = Convert.ToDateTime(record.Element("LastWriteTime")?.Value);
+                FileInfo fileInfo = new FileInfo(file);
+                // 将Base64字符串转换为字节数组
+                if (!fileInfo.Extension.Equals(@".a"))
                 {
-                    DateTime creationTime = Convert.ToDateTime(record.Element("CreationTime")?.Value);
-                    DateTime lastWriteTime = Convert.ToDateTime(record.Element("LastWriteTime")?.Value);
-
-                    // 将Base64字符串转换为字节数组
-                    byte[] nameBytes = Convert.FromBase64String(record.Element("FileName")?.Value);
-                    // 将字节数组转换为UTF8编码的字符串
-                    string fileName = System.Text.Encoding.UTF8.GetString(nameBytes);
-
-                    var base64Data = record.Element("Base64Data")?.Value;
-
-                    if (string.IsNullOrEmpty(fileName) || string.IsNullOrEmpty(base64Data))
-                        continue;
-
-                    // 解码Base64并保存文件
-                    var bytes = Convert.FromBase64String(base64Data);
-                    var savePath = System.IO.Path.Combine(folderSelectDialog.FileName, fileName);
-                    if (File.Exists(savePath)
-                        && MessageBox.Show($"文件【{fileName}】已存在，是否替换？", "警告", MessageBoxButton.YesNo) == MessageBoxResult.No)
-                    {
-                        continue;
-                    }
-
-                    File.WriteAllBytes(savePath, bytes);
-                    File.SetCreationTime(savePath, creationTime);
-                    File.SetLastWriteTime(savePath, lastWriteTime);
+                    txtStatus.Text = "请选择正确的还原文件";
+                    return;
                 }
-                txtStatus.Text = $"已成功还原{fileRecords.Count}个文件到{folderSelectDialog.FileName}";
+                byte[] nameBytes = Convert.FromBase64String(fileInfo.Name.Remove(fileInfo.Name.Length - 2, 2));
+                // 将字节数组转换为UTF8编码的字符串
+                string fileName = System.Text.Encoding.UTF8.GetString(nameBytes);
+
+                string saveFilePath = new FileInfo(file).DirectoryName + "\\" + fileName;
+                File.Move(file, saveFilePath);
             }
+            txtStatus.Text = $"已成功还原{selectedFiles.Count}个文件";
         }
     }
 }

@@ -19,10 +19,8 @@
 
             <!-- 操作按钮区域 -->
             <StackPanel Orientation="Horizontal" Margin="5">
-                <Button Content="转存为Base64并保存到XML" Click="BtnSaveToXml_Click" Width="200"/>
-                <Button Content="从XML还原文件" Click="BtnRestoreFromXml_Click" Width="200" Margin="10,0,0,0"/>
-                <TextBlock Text="转存文件开始序号" Margin="10,2,0,0"/>
-                <TextBox x:Name="nummber" Width="50" Margin="10,2,0,0" Text="1" HorizontalContentAlignment="Center"/>
+                <Button Content="转存为Base64" Click="BtnSaveToXml_Click" Width="200"/>
+                <Button Content="还原文件" Click="BtnRestoreFromXml_Click" Width="200" Margin="10,0,0,0"/>
             </StackPanel>
 
             <!-- 状态提示区域 -->
